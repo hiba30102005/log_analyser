@@ -81,3 +81,9 @@ Traceback (most recent call last):
     ...<2 lines>...
     )
 RuntimeError: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+2026-11-08 01:28:55,687 INFO [__main__] Read 3 valid event(s) from data
+2026-11-08 01:28:55,805 INFO [storage.database] PostgreSQL schema is ready
+2026-11-08 01:28:56,102 INFO [storage.database] Imported 3 valid event(s)
+2026-11-08 01:28:56,337 INFO [storage.database] Dashboard metrics loaded from PostgreSQL
+2026-11-08 01:29:03,915 INFO [serving.dashboard] Dashboard displayed
+2026-11-08 01:29:03,916 INFO [__main__] Log analysis completed successfully
