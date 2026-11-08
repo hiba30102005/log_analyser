@@ -10,6 +10,7 @@ from storage.database import fetch_dashboard_metrics, import_events, initialize_
 
 
 logger = logging.getLogger(__name__)
+DEFAULT_INPUT = Path(__file__).resolve().parent / "data"
 
 
 def configure_logging() -> None:
@@ -61,11 +62,13 @@ def load_events(input_path: Path) -> List[Dict[str, object]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Analyse authentication logs with PostgreSQL.")
+    parser = argparse.ArgumentParser(
+        description="Analyse authentication logs with a local SQLite database."
+    )
     parser.add_argument(
         "--input",
         type=Path,
-        default=Path("data"),
+        default=DEFAULT_INPUT,
         help="Log file or directory containing JSONL, LOG, TXT, or GZ files (default: data)",
     )
     arguments = parser.parse_args()

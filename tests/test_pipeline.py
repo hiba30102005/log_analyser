@@ -1,15 +1,36 @@
 import gzip
 import json
-import subprocess
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from main import main as pipeline_main
 from ingestion.raw import iter_log_lines, parse_event
 from serving.dashboard import create_dashboard, main as dashboard_main
-from storage.database import _psql_command, _run_psql, fetch_dashboard_metrics, import_events
+import storage.database as database
+from storage.database import fetch_dashboard_metrics, import_events, initialize_database
+
+
+class PipelineTests(unittest.TestCase):
+    def test_default_input_is_relative_to_script_directory(self):
+        metrics = {"failed_by_country": [], "success_by_user": []}
+        with (
+            patch("main.configure_logging"),
+            patch("main.load_events", return_value=[]) as load_events,
+            patch("main.initialize_database"),
+            patch("main.import_events"),
+            patch("main.fetch_dashboard_metrics", return_value=(metrics, 0)),
+            patch("main.create_dashboard"),
+            patch("sys.argv", ["main.py"]),
+        ):
+            result = pipeline_main()
+
+        self.assertEqual(result, 0)
+        self.assertEqual(
+            load_events.call_args.args[0],
+            Path(__file__).resolve().parents[1] / "data",
+        )
 
 
 class ParseEventTests(unittest.TestCase):
@@ -62,64 +83,8 @@ class IngestionTests(unittest.TestCase):
         self.assertEqual([row[1] for row in rows], [1, 1])
 
 
-class DatabaseAdapterTests(unittest.TestCase):
-    def test_uses_explicit_psql_path(self):
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            psql_path = Path(temporary_directory) / "psql.exe"
-            psql_path.touch()
-            with (
-                patch.dict("os.environ", {"PSQL_PATH": str(psql_path)}),
-                patch("storage.database.shutil.which", return_value=None),
-            ):
-                command = _psql_command()
-
-        self.assertEqual(command[0], str(psql_path))
-
-    def test_discovers_psql_in_standard_windows_installation(self):
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            postgres_directory = Path(temporary_directory) / "PostgreSQL"
-            older_psql = postgres_directory / "16" / "bin" / "psql.exe"
-            installed_psql = postgres_directory / "18" / "bin" / "psql.exe"
-            older_psql.parent.mkdir(parents=True)
-            installed_psql.parent.mkdir(parents=True)
-            older_psql.touch()
-            installed_psql.touch()
-            with (
-                patch("storage.database.os.name", "nt"),
-                patch.dict(
-                    "os.environ",
-                    {"ProgramFiles": temporary_directory},
-                    clear=False,
-                ),
-                patch.dict("os.environ", {"PSQL_PATH": ""}),
-                patch("storage.database.shutil.which", return_value=None),
-            ):
-                command = _psql_command()
-
-        self.assertEqual(command[0], str(installed_psql))
-
-    def test_handles_non_utf8_psql_error_output(self):
-        command = [
-            sys.executable,
-            "-c",
-            "import sys; sys.stderr.buffer.write(bytes([0xe9])); sys.exit(1)",
-        ]
-        with patch("storage.database._psql_command", return_value=command):
-            with self.assertRaisesRegex(RuntimeError, "PostgreSQL command failed"):
-                _run_psql([])
-
-    def test_sets_postgresql_client_encoding_to_utf8(self):
-        command = [sys.executable]
-        result = subprocess.CompletedProcess(command, 0, stdout="", stderr="")
-        with (
-            patch("storage.database._psql_command", return_value=command),
-            patch("storage.database.subprocess.run", return_value=result) as run,
-        ):
-            _run_psql([])
-
-        self.assertEqual(run.call_args.kwargs["env"]["PGCLIENTENCODING"], "UTF8")
-
-    def test_import_sends_csv_and_idempotent_upsert(self):
+class DatabaseTests(unittest.TestCase):
+    def test_imports_events_and_updates_existing_source_lines(self):
         event = {
             "occurred_at": "2026-10-25T10:17:00+00:00",
             "username": "user,one",
@@ -130,29 +95,66 @@ class DatabaseAdapterTests(unittest.TestCase):
             "source_file": "auth.jsonl",
             "line_number": 2,
         }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            database_path = Path(temporary_directory) / "events.sqlite3"
+            with patch.object(database, "DATABASE_PATH", database_path):
+                initialize_database()
+                self.assertEqual(import_events([event]), 1)
+                self.assertEqual(import_events([dict(event, country="Belgium")]), 1)
+                metrics, invalid_user_failures = fetch_dashboard_metrics()
 
-        with patch("storage.database._run_psql") as run_psql:
-            imported = import_events([event])
+        self.assertEqual(metrics["failed_by_country"], [("Belgium", 1)])
+        self.assertEqual(metrics["success_by_user"], [])
+        self.assertEqual(invalid_user_failures, 1)
 
-        self.assertEqual(imported, 1)
-        script = run_psql.call_args.kwargs["input_text"]
-        self.assertIn("\\copy auth_events_stage", script)
-        self.assertIn('"user,one"', script)
-        self.assertIn("ON CONFLICT (source_file, line_number) DO UPDATE", script)
+    def test_main_pipeline_runs_with_local_database(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            input_path = directory / "auth.jsonl"
+            input_path.write_text(
+                '{"timestamp":"2026-10-25T10:17:00Z","username":"amina",'
+                '"country":"France","status":"success"}\n',
+                encoding="utf-8",
+            )
+            database_path = directory / "events.sqlite3"
+            with (
+                patch("main.configure_logging"),
+                patch("main.create_dashboard") as show_dashboard,
+                patch.object(database, "DATABASE_PATH", database_path),
+                patch("sys.argv", ["main.py", "--input", str(input_path)]),
+            ):
+                result = pipeline_main()
 
-    def test_reads_dashboard_metrics_from_csv(self):
-        response = (
-            'metric,label,total\n'
-            'failed_by_country,France,3\n'
-            'invalid_user_failures,Invalid user,2\n'
-            'success_by_user,"user,one",5\n'
+        self.assertEqual(result, 0)
+        show_dashboard.assert_called_once_with(
+            {"failed_by_country": [], "success_by_user": [("amina", 1)]},
+            0,
         )
-        with patch("storage.database._run_psql", return_value=response):
-            metrics, invalid_user_failures = fetch_dashboard_metrics()
 
-        self.assertEqual(metrics["failed_by_country"], [("France", 3)])
-        self.assertEqual(metrics["success_by_user"], [("user,one", 5)])
-        self.assertEqual(invalid_user_failures, 2)
+    def test_reads_dashboard_metrics_from_sqlite(self):
+        event = {
+            "occurred_at": "2026-10-25T10:17:00+00:00",
+            "username": "amina",
+            "country": "France",
+            "status": "success",
+            "reason": None,
+            "is_invalid_user": False,
+            "source_file": "auth.jsonl",
+            "line_number": 1,
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            with patch.object(
+                database,
+                "DATABASE_PATH",
+                Path(temporary_directory) / "events.sqlite3",
+            ):
+                initialize_database()
+                import_events([event])
+                metrics, invalid_user_failures = fetch_dashboard_metrics()
+
+        self.assertEqual(metrics["failed_by_country"], [])
+        self.assertEqual(metrics["success_by_user"], [("amina", 1)])
+        self.assertEqual(invalid_user_failures, 0)
 
 
 class DashboardTests(unittest.TestCase):
