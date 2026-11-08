@@ -1,0 +1,83 @@
+2026-11-07 23:49:37,160 ERROR [__main__] Pipeline failed: Input path does not exist: data
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 81, in main
+    events = load_events(arguments.input)
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 40, in load_events
+    for log_file, line_number, line in iter_log_lines(input_path):
+                                       ~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\ingestion\raw.py", line 31, in iter_log_lines
+    for log_file in _log_files(path):
+                    ~~~~~~~~~~^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\ingestion\raw.py", line 19, in _log_files
+    raise FileNotFoundError("Input path does not exist: {}".format(path))
+FileNotFoundError: Input path does not exist: data
+2026-11-08 00:04:47,962 INFO [__main__] Read 3 valid event(s) from data
+2026-11-08 00:04:47,966 ERROR [__main__] Pipeline failed: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 82, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 67, in initialize_database
+    _run_psql(["-f", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 45, in _run_psql
+    command = _psql_command(csv_output)
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 19, in _psql_command
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+2026-11-08 00:10:22,570 INFO [__main__] Read 3 valid event(s) from data
+2026-11-08 00:10:22,751 INFO [storage.database] PostgreSQL schema is ready
+2026-11-08 00:10:22,843 INFO [storage.database] Imported 3 valid event(s)
+2026-11-08 00:10:22,917 INFO [storage.database] Dashboard metrics loaded from PostgreSQL
+2026-11-08 00:10:24,122 INFO [serving.dashboard] Dashboard saved to dashboard.png
+2026-11-08 00:10:24,123 INFO [__main__] Log analysis completed successfully
+2026-11-08 00:43:32,609 INFO [__main__] Read 3 valid event(s) from data
+2026-11-08 00:43:32,614 ERROR [__main__] Pipeline failed: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 76, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 67, in initialize_database
+    _run_psql(["-f", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 45, in _run_psql
+    command = _psql_command(csv_output)
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 19, in _psql_command
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+2026-11-08 00:46:18,117 INFO [__main__] Read 3 valid event(s) from data
+2026-11-08 00:46:18,123 ERROR [__main__] Pipeline failed: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 76, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 67, in initialize_database
+    _run_psql(["-f", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 45, in _run_psql
+    command = _psql_command(csv_output)
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 19, in _psql_command
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+2026-11-08 00:51:42,804 INFO [__main__] Read 3 valid event(s) from data
+2026-11-08 00:51:42,810 ERROR [__main__] Pipeline failed: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
+Traceback (most recent call last):
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 76, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 67, in initialize_database
+    _run_psql(["-f", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 45, in _run_psql
+    command = _psql_command(csv_output)
+  File "C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 19, in _psql_command
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: PostgreSQL command-line client 'psql' was not found. Install PostgreSQL client tools and add psql to PATH.
