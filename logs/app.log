@@ -87,3 +87,128 @@ RuntimeError: PostgreSQL command-line client 'psql' was not found. Install Postg
 2026-11-08 01:28:56,337 INFO [storage.database] Dashboard metrics loaded from PostgreSQL
 2026-11-08 01:29:03,915 INFO [serving.dashboard] Dashboard displayed
 2026-11-08 01:29:03,916 INFO [__main__] Log analysis completed successfully
+2026-11-09 23:41:50,417 INFO [__main__] Read 3 valid event(s) from C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\data
+2026-11-09 23:42:36,052 ERROR [storage.database] PostgreSQL command failed: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+2026-11-09 23:42:36,053 ERROR [storage.database] Could not initialize the PostgreSQL schema
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+2026-11-09 23:42:36,054 ERROR [__main__] Pipeline failed: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 79, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+2026-11-09 23:43:29,404 INFO [__main__] Read 3 valid event(s) from C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\data
+2026-11-09 23:43:39,842 ERROR [storage.database] PostgreSQL command failed: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+2026-11-09 23:43:39,847 ERROR [storage.database] Could not initialize the PostgreSQL schema
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+2026-11-09 23:43:39,895 ERROR [__main__] Pipeline failed: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 79, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+2026-11-09 23:46:45,191 INFO [__main__] Read 3 valid event(s) from C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\data
+2026-11-09 23:46:45,291 ERROR [storage.database] PostgreSQL command failed: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+2026-11-09 23:46:45,292 ERROR [storage.database] Could not initialize the PostgreSQL schema
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+2026-11-09 23:46:45,293 ERROR [__main__] Pipeline failed: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 79, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+2026-11-09 23:51:47,210 INFO [__main__] Read 3 valid event(s) from C:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\data
+2026-11-09 23:51:47,315 ERROR [storage.database] PostgreSQL command failed: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+2026-11-09 23:51:47,316 ERROR [storage.database] Could not initialize the PostgreSQL schema
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+2026-11-09 23:51:47,318 ERROR [__main__] Pipeline failed: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 79, in main
+    initialize_database()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 118, in initialize_database
+    _run_psql(["--file", str(schema_path)])
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 103, in _run_psql
+    raise RuntimeError(
+    ...<6 lines>...
+    )
+RuntimeError: PostgreSQL authentication failed. Set PGUSER to an existing PostgreSQL role and configure its password in %APPDATA%\postgresql\pgpass.conf (host:port:database:user:password). Do not put the password in the source code. PostgreSQL reported: psql: error: connection to server at "localhost" (::1), port 5432 failed: fe_sendauth: no password supplied
+2026-11-09 23:58:58,449 INFO [storage.database] PostgreSQL credentials are missing or invalid; requesting them once
+2026-11-10 00:14:50,559 INFO [storage.database] PostgreSQL password saved to the user pgpass file
+2026-11-10 00:14:50,688 ERROR [storage.database] PostgreSQL command failed: psql: error: connection to server at "localhost" (::1), port 5432 failed: FATAL:  authentification par mot de passe �chou�e pour l'utilisateur  � HP �
+password retrieved from file "C:\Users\HP\AppData\Roaming\postgresql\pgpass.conf"
+2026-11-10 00:14:50,688 ERROR [storage.database] Could not fetch dashboard metrics from PostgreSQL
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 325, in fetch_dashboard_metrics
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 195, in _run_psql
+        )
+        ^
+    ...<2 lines>...
+        "BEGIN;\n"
+        ^
+RuntimeError: PostgreSQL authentication failed. Check that PGUSER is an existing PostgreSQL role and that its password is correct.
+2026-11-10 00:14:50,690 ERROR [__main__] Pipeline failed: PostgreSQL authentication failed. Check that PGUSER is an existing PostgreSQL role and that its password is correct.
+Traceback (most recent call last):
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\main.py", line 87, in main
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 325, in fetch_dashboard_metrics
+  File "c:\Users\HP\Desktop\pythonA\Log_analyser (VF)\Log_analyser\storage\database.py", line 195, in _run_psql
+        )
+        ^
+    ...<2 lines>...
+        "BEGIN;\n"
+        ^
+RuntimeError: PostgreSQL authentication failed. Check that PGUSER is an existing PostgreSQL role and that its password is correct.

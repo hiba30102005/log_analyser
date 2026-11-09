@@ -1,6 +1,7 @@
 import gzip
 import json
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Iterator, List, Tuple
@@ -8,6 +9,18 @@ from typing import Dict, Iterator, List, Tuple
 logger = logging.getLogger(__name__)
 
 SUPPORTED_SUFFIXES = (".jsonl", ".log", ".txt")
+FAILED_SSH_RE = re.compile(
+    r"\bFailed\s+\S+\s+for\s+(?:(invalid user)\s+)?(\S+)\s+from\s+(\S+)",
+    re.IGNORECASE,
+)
+ACCEPTED_SSH_RE = re.compile(
+    r"\bAccepted\s+\S+\s+for\s+(\S+)\s+from\s+(\S+)",
+    re.IGNORECASE,
+)
+INVALID_USER_RE = re.compile(
+    r"\bInvalid user\s+(\S+)\s+from\s+(\S+)",
+    re.IGNORECASE,
+)
 
 
 def _log_files(path: Path) -> Iterator[Path]:
@@ -16,13 +29,15 @@ def _log_files(path: Path) -> Iterator[Path]:
     elif path.is_dir():
         candidates = sorted(candidate for candidate in path.rglob("*") if candidate.is_file())
     else:
-        raise FileNotFoundError("Input path does not exist: {}".format(path))
+        error = FileNotFoundError("Input path does not exist: {}".format(path))
+        logger.error("%s", error)
+        raise error
 
     for candidate in candidates:
         name = candidate.name.lower()
         if name.endswith(".gz"):
             name = name[:-3]
-        if name.endswith(SUPPORTED_SUFFIXES):
+        if name.endswith(SUPPORTED_SUFFIXES) or re.search(r"\.log\.\d+$", name):
             yield candidate
 
 
@@ -79,6 +94,103 @@ def parse_event(line: str) -> Dict[str, object]:
             and normalized_reason.lower() == "invalid_user"
         ),
     }
+
+
+def parse_log_record(line: str) -> Dict[str, object]:
+    """Normalize structured events and common OpenSSH syslog lines for display."""
+    try:
+        event = parse_event(line)
+    except (TypeError, ValueError):
+        event = None
+
+    record: Dict[str, object] = {
+        "message": line,
+        "occurred_at": None,
+        "username": None,
+        "country": None,
+        "source": None,
+        "status": "other",
+        "category": "Autre log",
+        "is_invalid_user": False,
+    }
+    if event is not None:
+        status = str(event["status"])
+        invalid_user = bool(event["is_invalid_user"])
+        record.update(
+            {
+                "occurred_at": event["occurred_at"],
+                "username": event["username"],
+                "country": event["country"],
+                "status": status,
+                "category": (
+                    "Échec (utilisateur invalide)"
+                    if invalid_user
+                    else "Échec"
+                    if status == "failed"
+                    else "Connexion réussie"
+                ),
+                "is_invalid_user": invalid_user,
+            }
+        )
+        return record
+
+    failed_match = FAILED_SSH_RE.search(line)
+    if failed_match:
+        invalid_user, username, source = failed_match.groups()
+        invalid = invalid_user is not None
+        record.update(
+            {
+                "username": username,
+                "source": source.rstrip(","),
+                "status": "failed",
+                "category": (
+                    "Échec (utilisateur invalide)" if invalid else "Échec SSH"
+                ),
+                "is_invalid_user": invalid,
+            }
+        )
+        return record
+
+    accepted_match = ACCEPTED_SSH_RE.search(line)
+    if accepted_match:
+        username, source = accepted_match.groups()
+        record.update(
+            {
+                "username": username,
+                "source": source.rstrip(","),
+                "status": "success",
+                "category": "Connexion réussie",
+            }
+        )
+        return record
+
+    invalid_match = INVALID_USER_RE.search(line)
+    if invalid_match:
+        username, source = invalid_match.groups()
+        record.update(
+            {
+                "username": username,
+                "source": source.rstrip(","),
+                "category": "Utilisateur invalide détecté",
+                "is_invalid_user": True,
+            }
+        )
+    elif "authentication failure" in line.lower():
+        record["category"] = "Détail d'échec PAM"
+    return record
+
+
+def load_log_records(path: Path) -> List[Dict[str, object]]:
+    """Read every line from every supported log file for dashboard display."""
+    root = path if path.is_dir() else path.parent
+    records: List[Dict[str, object]] = []
+    for log_file, line_number, line in iter_log_lines(path):
+        record = parse_log_record(line)
+        record["source_file"] = log_file.relative_to(root).as_posix()
+        record["line_number"] = line_number
+        records.append(record)
+    logger.info("Read %d log line(s) from %s", len(records), path)
+    return records
 
 
 def toRows(path: str) -> List[str]:
